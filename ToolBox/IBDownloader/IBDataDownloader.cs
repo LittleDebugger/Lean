@@ -53,7 +53,7 @@ namespace QuantConnect.ToolBox.IBDownloader
         public IEnumerable<BaseData> Get(Symbol symbol, Resolution resolution, DateTime startUtc, DateTime endUtc)
         {
             if (resolution == Resolution.Tick)
-                throw new NotSupportedException("Resolution not available: " + resolution);
+               throw new NotSupportedException("Resolution not available: " + resolution);
 
             if (endUtc < startUtc)
                 throw new ArgumentException("The end date must be greater or equal than the start date.");
@@ -67,7 +67,7 @@ namespace QuantConnect.ToolBox.IBDownloader
                 SecurityExchangeHours.AlwaysOpen(TimeZones.EasternStandard),
                 DateTimeZone.Utc,
                 resolution,
-                false,
+                true,
                 false,
                 DataNormalizationMode.Adjusted,
                 TickType.Quote);
