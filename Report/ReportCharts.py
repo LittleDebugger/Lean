@@ -585,7 +585,7 @@ class ReportCharts:
 
         fig = ax.get_figure()
         plt.xticks(rotation=0, ha='center', fontsize=8)
-        plt.yticks(ticks=[i for i in plt.yticks()[0] if i <= 0], labels=['{:.1f}%'.format(i * 100) for i in plt.yticks()[0] if i <= 0], fontsize=8)
+        plt.yticks([i for i in plt.yticks()[0] if i <= 0], labels=['{:.1f}%'.format(i * 100) for i in plt.yticks()[0] if i <= 0], fontsize=8)
         plt.ylabel("")
         plt.xlabel("")
         plt.axhline(y=0, color='#d5d5d5', zorder=1)
