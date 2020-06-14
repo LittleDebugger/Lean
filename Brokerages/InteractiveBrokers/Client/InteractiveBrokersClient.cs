@@ -15,6 +15,7 @@
 
 using System;
 using IBApi;
+using QuantConnect.Logging;
 
 namespace QuantConnect.Brokerages.InteractiveBrokers.Client
 {
@@ -267,6 +268,11 @@ namespace QuantConnect.Brokerages.InteractiveBrokers.Client
             OnAccountSummaryEnd(new RequestEndEventArgs(reqId));
         }
 
+        public override void accountSummary(int reqId, string account, string tag, string value, string currency)
+        {
+            Log.Error($"{account} {tag} {value} {currency}");
+            base.accountSummary(reqId, account, tag, value, currency);
+        }
         /// <summary>
         /// Sends bond contract data when the reqContractDetails() method has been called for bonds.
         /// </summary>
