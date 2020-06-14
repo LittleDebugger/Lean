@@ -60,6 +60,7 @@ namespace QuantConnect
             Tuple.Create(CME, 23),
             Tuple.Create(SGX, 24),
             Tuple.Create(HKFE, 25),
+            Tuple.Create(Lseetf, 10000)
         };
 
         static Market()
@@ -199,6 +200,14 @@ namespace QuantConnect
         /// </summary>
         public const string Bittrex = "bittrex";
 
+        /// </summary>
+        public const string Lseetf = "lseetf";
+
+        /// </summary>
+        public const string Lse = "lse";
+
+        public const string Arca = "arca";
+        
         /// <summary>
         /// Adds the specified market to the map of available markets with the specified identifier.
         /// </summary>
