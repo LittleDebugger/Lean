@@ -131,7 +131,10 @@ namespace QuantConnect.Orders.Fees
                             equityFee = new EquityFee("USD", feePerShare: 0.005m, minimumFee: 1, maximumFeeRate: 0.005m);
                             break;
                         default:
-                            throw new KeyNotFoundException($"InteractiveBrokersFeeModel(): unexpected equity Market {market}");
+                            // This is just defaulting currently
+                            equityFee = new EquityFee("USD", feePerShare: 0.005m, minimumFee: 5, maximumFeeRate: 0.005m);
+                            break;
+//                            throw new KeyNotFoundException($"InteractiveBrokersFeeModel(): unexpected equity Market {market}");
                     }
                     var tradeValue = Math.Abs(order.GetValue(security));
 
