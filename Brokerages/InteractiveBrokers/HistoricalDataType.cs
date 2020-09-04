@@ -23,6 +23,7 @@ namespace QuantConnect.Brokerages.InteractiveBrokers
         /// <summary>
         /// Return Trade data only
         /// </summary>
+        /// TODOHG could also be ADJUSTED_LAST
         public const string Trades = "TRADES";
 
         /// <summary>
