@@ -84,6 +84,9 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Numerics" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -186,6 +189,13 @@
     <Compile Include="BasicSetAccountCurrencyAlgorithm.cs" />
     <Compile Include="FineFundamentalFilteredUniverseRegressionAlgorithm.cs" />
     <Compile Include="FutureSharingTickerRegressionAlgorithm.cs" />
+    <Compile Include="TestingAlgo1.cs" />
+    <Compile Include="Day9SmaOnCspx.cs" />
+    <Compile Include="JustSpy.cs" />
+    <Compile Include="SpyCSPXArbShort.cs" />
+    <Compile Include="SpyCSPXArb.cs" />
+    <Compile Include="TestingAlgo2.cs" />
+    <Compile Include="Helpers\SmaCrossover.cs" />
     <Compile Include="LongOnlyAlphaStreamAlgorithm.cs" />
     <Compile Include="Benchmarks\SECReportBenchmarkAlgorithm.cs" />
     <Compile Include="Benchmarks\SmartInsiderEventBenchmarkAlgorithm.cs" />
