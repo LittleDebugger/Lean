@@ -93,7 +93,7 @@ namespace QuantConnect
                     throw new NotImplementedException(Invariant($"The security type has not been implemented yet: {securityType}"));
             }
 
-            return new Symbol(sid, alias ?? ticker);
+            return new Symbol(sid, alias ?? ticker, market);
         }
 
         /// <summary>
@@ -283,8 +283,15 @@ namespace QuantConnect
         /// </summary>
         /// <param name="sid">The security identifier for this symbol</param>
         /// <param name="value">The current ticker symbol value</param>
-        public Symbol(SecurityIdentifier sid, string value)
+        public Symbol(SecurityIdentifier sid, string value, string market = null)
         {
+            Market = market;
+
+            if (string.Equals(Market, "USA", StringComparison.InvariantCultureIgnoreCase))
+            {
+                Market = "SMART";
+            }
+
             if (value == null)
             {
                 throw new ArgumentNullException(nameof(value));
@@ -294,6 +301,8 @@ namespace QuantConnect
             Value = value.LazyToUpper();
         }
 
+        public string Market { get; }
+
         /// <summary>
         /// Creates new symbol with updated mapped symbol. Symbol Mapping: When symbols change over time (e.g. CHASE-> JPM) need to update the symbol requested.
         /// Method returns newly created symbol
@@ -302,7 +311,7 @@ namespace QuantConnect
         {
             if (ID.SecurityType == SecurityType.Option)
             {
-                var underlyingSymbol = new Symbol(Underlying.ID, mappedSymbol, null);
+                var underlyingSymbol = new Symbol(Underlying.ID, mappedSymbol, market: null);
 
                 var alias = Value;
 
