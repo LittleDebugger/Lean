@@ -193,7 +193,7 @@
     <Compile Include="Day9SmaOnCspx.cs" />
     <Compile Include="JustSpy.cs" />
     <Compile Include="SpyCSPXArbShort.cs" />
-    <Compile Include="SpyCSPXArb.cs" />
+    <Compile Include="SpyCSSPXArb.cs" />
     <Compile Include="TestingAlgo2.cs" />
     <Compile Include="Helpers\SmaCrossover.cs" />
     <Compile Include="LongOnlyAlphaStreamAlgorithm.cs" />
