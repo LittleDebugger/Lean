@@ -46,10 +46,10 @@ namespace QuantConnect.Brokerages.InteractiveBrokers
         /// </remarks>
         public override Dictionary<string, string> BrokerageData => new Dictionary<string, string>
         {
-            { "ib-account", Config.Get("ib-account") },
-            { "ib-user-name", Config.Get("ib-user-name") },
+            { "ib-account", Config.Get("ib-account-" + Config.GetEnvironment()) },
+            { "ib-user-name", Config.Get("ib-user-name")},
             { "ib-password", Config.Get("ib-password") },
-            { "ib-trading-mode", Config.Get("ib-trading-mode") },
+            { "ib-trading-mode", Config.Get("ib-trading-mode-" + Config.GetEnvironment()) },
             { "ib-agent-description", Config.Get("ib-agent-description") }
         };
 
