@@ -134,7 +134,7 @@ namespace QuantConnect.Brokerages.InteractiveBrokers.Client
         /// <summary>
         /// HistoricalDataEnd event handler
         /// </summary>
-        public event EventHandler<HeadTimestampEventArgs> HeadTimestamp;
+        //public event EventHandler<HeadTimestampEventArgs> HeadTimestamp;
 
 
         /// <summary>
@@ -423,7 +423,7 @@ namespace QuantConnect.Brokerages.InteractiveBrokers.Client
 
         public override void headTimestamp(int reqId, string headTimestamp)
         {
-            OnHeadTimestamp(new HeadTimestampEventArgs(reqId, headTimestamp));   
+            //OnHeadTimestamp(new HeadTimestampEventArgs(reqId, headTimestamp));   
         }
 
         /// <summary>
@@ -645,10 +645,10 @@ namespace QuantConnect.Brokerages.InteractiveBrokers.Client
             HistoricalDataEnd?.Invoke(this, e);
         }
 
-        protected virtual void OnHeadTimestamp(HeadTimestampEventArgs e)
-        {
-            HeadTimestamp?.Invoke(this, e);
-        }
+        //protected virtual void OnHeadTimestamp(HeadTimestampEventArgs e)
+        //{
+        //    HeadTimestamp?.Invoke(this, e);
+        //}
 
         /// <summary>
         /// PositionEnd event invocator

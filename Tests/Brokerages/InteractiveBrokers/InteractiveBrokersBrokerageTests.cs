@@ -38,7 +38,7 @@ namespace QuantConnect.Tests.Brokerages.InteractiveBrokers
     public class InteractiveBrokersBrokerageTests
     {
         private readonly List<Order> _orders = new List<Order>();
-        private InteractiveBrokersBrokerage _interactiveBrokersBrokerage;
+        private QuantConnect.Brokerages.InteractiveBrokers.InteractiveBrokersBrokerage _interactiveBrokersBrokerage;
         private const int buyQuantity = 100;
         private const SecurityType Type = SecurityType.Forex;
 
