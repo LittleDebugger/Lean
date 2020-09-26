@@ -915,6 +915,8 @@ namespace QuantConnect.Algorithm
         /// <seealso cref="MarketOrder(QuantConnect.Symbol,decimal,bool,string)"/>
         public void SetHoldings(Symbol symbol, int percentage, bool liquidateExistingHoldings = false, string tag = "")
         {
+            Console.WriteLine($"SetHoldings({symbol.Value}, {percentage})");
+
             SetHoldings(symbol, (decimal)percentage, liquidateExistingHoldings, tag);
         }
 
