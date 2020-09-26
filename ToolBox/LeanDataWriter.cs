@@ -54,6 +54,14 @@ namespace QuantConnect.ToolBox
         )
         {
             _symbol = symbol;
+            _market = symbol.ID.Market.ToLowerInvariant();
+
+            if (_symbol.Value.Contains(".") && !(_market == "usa" || _market == "smart"))
+                {
+                _symbol = _symbol.Value.Split('.')[0];
+            }
+
+            _dataType = dataType;
             // All fx data is quote data.
             if (_securityType == SecurityType.Forex || _securityType == SecurityType.Cfd)
             {

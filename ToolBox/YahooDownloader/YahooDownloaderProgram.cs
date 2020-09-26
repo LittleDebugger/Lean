@@ -44,14 +44,27 @@ namespace QuantConnect.ToolBox.YahooDownloader
                 var dataDirectory = Config.Get("data-directory", "../../../Data");
 
                 // Create an instance of the downloader
-                const string market = Market.USA;
                 var downloader = new YahooDataDownloader();
 
                 foreach (var ticker in tickers)
                 {
                     // Download the data
+                    string market = ticker.EndsWith(".L", StringComparison.InvariantCultureIgnoreCase)
+                        ? Market.Lseetf
+                        : Market.USA;
+
                     var symbolObject = Symbol.Create(ticker, SecurityType.Equity, market);
                     var data = downloader.Get(symbolObject, castResolution, startDate, endDate);
+
+                    if (string.Equals(ticker, "CSPX.L", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        symbolObject = Symbol.Create("CSSPX", SecurityType.Equity, market);
+                    }
+
+                    if (string.Equals(ticker, "IAUP.L", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        symbolObject = Symbol.Create("IAUP", SecurityType.Equity, market);
+                    }
 
                     // Save the data
                     var writer = new LeanDataWriter(castResolution, symbolObject, dataDirectory);
