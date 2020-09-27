@@ -31,7 +31,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Debug\QuantConnect.Indicators.xml</DocumentationFile>
-    <LangVersion>6</LangVersion>
+    <LangVersion>7.0</LangVersion>
     <CodeAnalysisRuleSet>..\QuantConnect.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -41,7 +41,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <LangVersion>6</LangVersion>
+    <LangVersion>7.0</LangVersion>
     <CodeAnalysisRuleSet>..\QuantConnect.ruleset</CodeAnalysisRuleSet>
     <DocumentationFile>bin\Release\QuantConnect.Indicators.xml</DocumentationFile>
   </PropertyGroup>
@@ -183,7 +183,7 @@
     <Compile Include="SchaffTrendCycle.cs" />
     <Compile Include="WilderMovingAverage.cs" />
     <Compile Include="FractalAdaptiveMovingAverage.cs" />
-    <Compile Include="EaseOfMovementValue.cs"/>
+    <Compile Include="EaseOfMovementValue.cs" />
     <Compile Include="FilteredIdentity.cs" />
     <Compile Include="HullMovingAverage.cs" />
     <Compile Include="MassIndex.cs" />

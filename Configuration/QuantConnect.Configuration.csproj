@@ -34,7 +34,7 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
     <DocumentationFile>bin\Debug\QuantConnect.Configuration.xml</DocumentationFile>
-    <LangVersion>6</LangVersion>
+    <LangVersion>7.0</LangVersion>
     <CodeAnalysisRuleSet>..\QuantConnect.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -45,7 +45,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>6</LangVersion>
+    <LangVersion>7.0</LangVersion>
     <DocumentationFile>bin\Release\QuantConnect.Configuration.xml</DocumentationFile>
   </PropertyGroup>
   <Target Name="Print" BeforeTargets="Build">

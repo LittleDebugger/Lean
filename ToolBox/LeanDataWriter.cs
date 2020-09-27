@@ -38,6 +38,7 @@ namespace QuantConnect.ToolBox
         private readonly bool _appendToZips;
         private readonly Resolution _resolution;
         private readonly SecurityType _securityType;
+        private string _market;
 
         /// <summary>
         /// Create a new lean data writer to this base data directory.
@@ -61,7 +62,6 @@ namespace QuantConnect.ToolBox
                 _symbol = _symbol.Value.Split('.')[0];
             }
 
-            _dataType = dataType;
             // All fx data is quote data.
             if (_securityType == SecurityType.Forex || _securityType == SecurityType.Cfd)
             {

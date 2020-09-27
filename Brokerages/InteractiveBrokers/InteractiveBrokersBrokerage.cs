@@ -168,7 +168,7 @@ namespace QuantConnect.Brokerages.InteractiveBrokers
                 orderProvider,
                 securityProvider,
                 aggregator,
-                Config.Get("ib-account-" + Config.GetEnvironment()),
+                Config.Get("ib-account"),
                 Config.Get("ib-host", "LOCALHOST"),
                 Config.GetInt("ib-port", 4001),
                 Config.Get("ib-tws-dir"),
@@ -201,7 +201,7 @@ namespace QuantConnect.Brokerages.InteractiveBrokers
                 Config.Get("ib-version", "974"),
                 Config.Get("ib-user-name"),
                 Config.Get("ib-password"),
-                Config.Get("ib-trading-mode-" + Config.GetEnvironment()),
+                Config.Get("ib-trading-mode"),
                 Config.GetValue("ib-agent-description", IB.AgentDescription.Individual)
                 )
         {
@@ -300,27 +300,6 @@ namespace QuantConnect.Brokerages.InteractiveBrokers
             {
                 Log.Trace("InteractiveBrokersBrokerage.HandleConnectionClosed(): API client disconnected.");
             };
-        }
-
-                            Log.Trace($"InteractiveBrokersBrokerage.ResetHandler(): Reset sequence end. Current IsConnected state: {IsConnected}");
-                        }
-                    }
-
-                    Log.Trace("InteractiveBrokersBrokerage.ResetHandler(): thread ended.");
-                }
-                catch (Exception exception)
-                {
-                    Log.Error("InteractiveBrokersBrokerage.ResetHandler(): Error in reset handler thread: " + exception);
-                }
-            })
-            { IsBackground = true }.Start();
-
-            if (!Client.Connected)
-            {
-                Connect();
-            }
-            var id = GetNextRequestId();
-            Client.ClientSocket.reqAccountSummary(id, "All", "$LEDGER:USD");
         }
 
         /// <summary>
@@ -663,9 +642,6 @@ namespace QuantConnect.Brokerages.InteractiveBrokers
         /// <summary>
         /// Connects the client to the IB gateway
         /// </summary>
-        /// <summary>
-        /// Connects the client to the IB gateway
-        /// </summary>
         public override void Connect()
         {
             if (IsConnected) return;
@@ -820,11 +796,23 @@ namespace QuantConnect.Brokerages.InteractiveBrokers
                     throw;
                 }
             }
+
+            // if we reached here we should be connected, check just in case
+            if (IsConnected)
+            {
+                Log.Trace("InteractiveBrokersBrokerage.Connect(): Restoring data subscriptions...");
+                RestoreDataSubscriptions();
+            }
+            else
+            {
+                OnMessage(new BrokerageMessageEvent(BrokerageMessageType.Error, "ConnectionState", "Unexpected, not connected state. Unable to connect to Interactive Brokers. Terminating algorithm."));
+            }
         }
-            /// <summary>
-            /// Downloads the financial advisor configuration information.
-            /// This method is called upon successful connection.
-            /// </summary>
+
+        /// <summary>
+        /// Downloads the financial advisor configuration information.
+        /// This method is called upon successful connection.
+        /// </summary>
         private bool DownloadFinancialAdvisorAccount(string account)
         {
             if (!_accountData.FinancialAdvisorConfiguration.Load(_client))
@@ -925,11 +913,9 @@ namespace QuantConnect.Brokerages.InteractiveBrokers
                 _client.Dispose();
             }
 
-            if (_hasOpenConnection)
-            {
-                _ibAutomater?.Stop();
-            }
-           
+            _aggregator.DisposeSafely();
+            _ibAutomater?.Stop();
+
             _messagingRateLimiter.Dispose();
         }
 
@@ -1813,7 +1799,7 @@ namespace QuantConnect.Brokerages.InteractiveBrokers
                 Symbol = ibSymbol,
                 Exchange = exchange ?? "Smart",
                 SecType = securityType,
-                Currency = currencyLookup.ContainsKey(symbol.Value) ? currencyLookup[symbol.Value] : "USD"
+                Currency = Currencies.USD
             };
             if (symbol.ID.SecurityType == SecurityType.Forex)
             {
@@ -1879,7 +1865,7 @@ namespace QuantConnect.Brokerages.InteractiveBrokers
         {
             switch (direction)
             {
-                case OrderDirection.Buy:  return IB.ActionSide.Buy;
+                case OrderDirection.Buy: return IB.ActionSide.Buy;
                 case OrderDirection.Sell: return IB.ActionSide.Sell;
                 case OrderDirection.Hold: return IB.ActionSide.Undefined;
                 default:
@@ -1894,12 +1880,12 @@ namespace QuantConnect.Brokerages.InteractiveBrokers
         {
             switch (type)
             {
-                case OrderType.Market:          return IB.OrderType.Market;
-                case OrderType.Limit:           return IB.OrderType.Limit;
-                case OrderType.StopMarket:      return IB.OrderType.Stop;
-                case OrderType.StopLimit:       return IB.OrderType.StopLimit;
-                case OrderType.MarketOnOpen:    return IB.OrderType.Market;
-                case OrderType.MarketOnClose:   return IB.OrderType.MarketOnClose;
+                case OrderType.Market: return IB.OrderType.Market;
+                case OrderType.Limit: return IB.OrderType.Limit;
+                case OrderType.StopMarket: return IB.OrderType.Stop;
+                case OrderType.StopLimit: return IB.OrderType.StopLimit;
+                case OrderType.MarketOnOpen: return IB.OrderType.Market;
+                case OrderType.MarketOnClose: return IB.OrderType.MarketOnClose;
                 default:
                     throw new InvalidEnumArgumentException("type", (int)type, typeof(OrderType));
             }
@@ -1912,10 +1898,10 @@ namespace QuantConnect.Brokerages.InteractiveBrokers
         {
             switch (order.OrderType)
             {
-                case IB.OrderType.Limit:            return OrderType.Limit;
-                case IB.OrderType.Stop:             return OrderType.StopMarket;
-                case IB.OrderType.StopLimit:        return OrderType.StopLimit;
-                case IB.OrderType.MarketOnClose:    return OrderType.MarketOnClose;
+                case IB.OrderType.Limit: return OrderType.Limit;
+                case IB.OrderType.Stop: return OrderType.StopMarket;
+                case IB.OrderType.StopLimit: return OrderType.StopLimit;
+                case IB.OrderType.MarketOnClose: return OrderType.MarketOnClose;
 
                 case IB.OrderType.Market:
                     if (order.Tif == IB.TimeInForce.MarketOnOpen)
@@ -2146,8 +2132,6 @@ namespace QuantConnect.Brokerages.InteractiveBrokers
                     return "60 S";
                 case Resolution.Minute:
                     return "1 D";
-                case Resolution.Minute:
-                    return "20 Y";
                 case Resolution.Hour:
                     return "1 M";
                 case Resolution.Daily:
@@ -2322,8 +2306,8 @@ namespace QuantConnect.Brokerages.InteractiveBrokers
                                 return false;
                             }
 
-                                var id = GetNextTickerId();
-                                var contract = CreateContract(subscribeSymbol);
+                            var id = GetNextTickerId();
+                            var contract = CreateContract(subscribeSymbol, false);
 
                             _requestInformation[id] = $"Subscribe: {symbol.Value} ({contract})";
 
@@ -2807,10 +2791,12 @@ namespace QuantConnect.Brokerages.InteractiveBrokers
                 yield break;
             }
 
-            // only trades can be requested (except for FX/CFD)
-            if (request.Symbol.SecurityType != SecurityType.Forex &&
+            // skip invalid security types
+            if (request.Symbol.SecurityType != SecurityType.Equity &&
+                request.Symbol.SecurityType != SecurityType.Forex &&
                 request.Symbol.SecurityType != SecurityType.Cfd &&
-                request.TickType != TickType.Trade)
+                request.Symbol.SecurityType != SecurityType.Future &&
+                request.Symbol.SecurityType != SecurityType.Option)
             {
                 yield break;
             }
@@ -2824,75 +2810,8 @@ namespace QuantConnect.Brokerages.InteractiveBrokers
                 yield break;
             }
 
-
-            // cleaning the data before returning it back to user
-            var requestStartTime = request.StartTimeUtc.ConvertFromUtc(exchangeTimeZone);
-            var requestEndTime = request.EndTimeUtc.ConvertFromUtc(exchangeTimeZone);
-
-            return history.Where(bar => bar.Time >= requestStartTime && bar.EndTime <= requestEndTime);
-        }
-
-        public override IEnumerable<BaseData> GetHistory(HistoryRequest request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<DateTime?> GetHeadTime(HistoryRequest request)
-        {
-            var contract = CreateContract(request.Symbol, request.Symbol.ID.Market);
-            var ticker = GetNextTickerId();
-            dataDownloaded[ticker] = new AutoResetEvent(false);
-            
-            var date = "";
-
-            EventHandler<IB.HeadTimestampEventArgs> headTimestapEvent = (sender, args) =>
-            {
-                if (args.RequestId == ticker)
-                {
-                    dataDownloaded[ticker].Set();
-                    date = args.Timestamp;
-                }
-            };
-
-            await semaphoreSim.WaitAsync();
-
-            Client.HeadTimestamp += headTimestapEvent;
-            Client.ClientSocket.reqHeadTimestamp(ticker, contract, request.TickType == TickType.Trade ? "TRADES" : "BID_ASK", 0, 1);
-
-            var waitResult = await WaitOneAsync(dataDownloaded[ticker], 60 * 10000, new CancellationToken());
-
-            Client.HeadTimestamp -= headTimestapEvent;
-            if (string.IsNullOrEmpty(date))
-            {
-                return null;
-            }
-
-            semaphoreSim.Release();
-            return DateTime.ParseExact(date, "yyyyMMdd  HH:mm:ss", null).AddDays(+1);
-        }
-
-
-
-        /// <summary>
-        /// Gets the history for the requested security
-        /// </summary>
-        /// <param name="request">The historical data request</param>
-        /// <returns>An enumerable of bars covering the span specified in the request</returns>
-        /// <remarks>For IB history limitations see https://www.interactivebrokers.com/en/software/api/apiguide/tables/historical_data_limitations.htm </remarks>
-        public async Task<IEnumerable<BaseData>> GetHistoryAsync(HistoryRequest request)
-        {
-            // skipping universe and canonical symbols
-            if (!CanSubscribe(request.Symbol) ||
-                (request.Symbol.ID.SecurityType == SecurityType.Option && request.Symbol.IsCanonical()) ||
-                (request.Symbol.ID.SecurityType == SecurityType.Future && request.Symbol.IsCanonical()))
-            {
-                return Enumerable.Empty<BaseData>();
-            }
-
-            // TODO to get the first time
-            // client.reqHeadTimestamp(14001, ContractSamples.USStock(), "TRADES", 1, 1);
             // preparing the data for IB request
-            var contract = CreateContract(request.Symbol, request.Symbol.ID.Market);
+            var contract = CreateContract(request.Symbol, true);
             var resolution = ConvertResolution(request.Resolution);
             var duration = ConvertResolutionToDuration(request.Resolution);
             var startTime = request.Resolution == Resolution.Daily ? request.StartTimeUtc.Date : request.StartTimeUtc;
@@ -2909,7 +2828,7 @@ namespace QuantConnect.Brokerages.InteractiveBrokers
             }
 
             IEnumerable<BaseData> history;
-            if (request.Symbol.SecurityType == SecurityType.Forex || request.Symbol.SecurityType == SecurityType.Equity  || request.Symbol.SecurityType == SecurityType.Cfd)
+            if (request.TickType == TickType.Quote)
             {
                 // Quotes need two separate IB requests for Bid and Ask,
                 // each pair of TradeBars will be joined into a single QuoteBar
@@ -2930,7 +2849,8 @@ namespace QuantConnect.Brokerages.InteractiveBrokers
             }
             else
             {
-                return Enumerable.Empty<BaseData>();
+                // other assets will have TradeBars
+                history = GetHistory(request, contract, startTime, endTime, exchangeTimeZone, duration, resolution, HistoricalDataType.Trades);
             }
 
             // cleaning the data before returning it back to user
@@ -3020,8 +2940,12 @@ namespace QuantConnect.Brokerages.InteractiveBrokers
                 Client.ClientSocket.reqHistoricalData(historicalTicker, contract, endTime.ToStringInvariant("yyyyMMdd HH:mm:ss UTC"),
                     duration, resolution, dataType, useRegularTradingHours, 2, false, new List<TagValue>());
 
-                var waitResult = await WaitOneAsync(dataDownloaded[eventId], timeOut * 10000000, new CancellationToken());
-                
+                var waitResult = 0;
+                while (waitResult == 0)
+                {
+                    waitResult = WaitHandle.WaitAny(new WaitHandle[] { dataDownloading, dataDownloaded }, timeOut * 1000);
+                }
+
                 Client.Error -= clientOnError;
                 Client.HistoricalData -= clientOnHistoricalData;
                 Client.HistoricalDataEnd -= clientOnHistoricalDataEnd;
@@ -3050,17 +2974,8 @@ namespace QuantConnect.Brokerages.InteractiveBrokers
                 history.InsertRange(0, filteredPiece);
 
                 // moving endTime to the new position to proceed with next request (if needed)
-                endTime = filteredPiece.Last().Time;
+                endTime = filteredPiece.First().Time;
             }
-
-            semaphoreSim.Release();
-
-            // why groups????
-            var results = history.GroupBy(x => x.Time);
-
-            return history.GroupBy(x => x.Time).Select(x => x.First()).OrderBy(x => x.Time);
-            //return history;
-        }
 
             return history;
         }
@@ -3169,5 +3084,4 @@ namespace QuantConnect.Brokerages.InteractiveBrokers
             105, 106, 107, 109, 110, 111, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 129, 131, 132, 133, 134, 135, 136, 137, 140, 141, 146, 147, 148, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 163, 167, 168, 201, 313,314,315,325,328,329,334,335,336,337,338,339,340,341,342,343,345,347,348,349,350,352,353,355,356,358,359,360,361,362,363,364,367,368,369,370,371,372,373,374,375,376,377,378,379,380,382,383,387,388,389,390,391,392,393,394,395,396,397,398,400,401,402,403,405,406,407,408,409,410,411,412,413,417,418,419,421,423,424,427,428,429,433,434,435,436,437,439,440,441,442,443,444,445,446,447,448,449,10002,10006,10007,10008,10009,10010,10011,10012,10014,10020,2102
         };
     }
-
 }
