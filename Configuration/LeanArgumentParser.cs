@@ -49,7 +49,7 @@ namespace QuantConnect.Configuration
                 new CommandLineOption("composer-dll-directory", CommandOptionType.SingleValue),
 
                 // engine
-                new CommandLineOption("data-folder", CommandOptionType.SingleValue),
+                new CommandLineOption("data-directory", CommandOptionType.SingleValue),
 
                 // handlers
                 new CommandLineOption("log-handler", CommandOptionType.SingleValue),

@@ -118,7 +118,7 @@ namespace QuantConnect.Lean.Engine
         /// </summary>
         public void Initialize()
         {
-            Api.Initialize(Config.GetInt("job-user-id", 0), Config.Get("api-access-token", ""), Config.Get("data-folder"));
+            Api.Initialize(Config.GetInt("job-user-id", 0), Config.Get("api-access-token", ""), Config.Get("data-directory"));
             Notify.Initialize();
             JobQueue.Initialize(Api);
         }

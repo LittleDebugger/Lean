@@ -30,7 +30,7 @@ namespace QuantConnect.Tests.API
     {
         private int _testAccount = 1;
         private string _testToken = "ec87b337ac970da4cbea648f24f1c851";
-        private string _dataFolder = Config.Get("data-folder");
+        private string _dataFolder = Config.Get("data-directory");
         private Api.Api _api;
         private const bool stopLiveAlgos = true;
 

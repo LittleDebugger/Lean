@@ -30,7 +30,7 @@ namespace QuantConnect.Lean.Engine.DataFeeds
     {
         private readonly int _uid = Config.GetInt("job-user-id", 0);
         private readonly string _token = Config.Get("api-access-token", "1");
-        private readonly string _dataPath = Config.Get("data-folder", "../../../Data/");
+        private readonly string _dataPath = Config.Get("data-directory", "../../../Data/");
         private readonly Api.Api _api;
 
         /// <summary>

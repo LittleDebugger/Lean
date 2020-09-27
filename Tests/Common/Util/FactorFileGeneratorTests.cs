@@ -33,7 +33,7 @@ namespace QuantConnect.Tests.Common.Util
         private const string PermTick = "AAPL";
         private const string Market = "usa";
         readonly Symbol _symbol = new Symbol(SecurityIdentifier.GenerateEquity(PermTick, Market), PermTick);
-        private readonly string _dataPath = LeanData.GenerateZipFilePath(Config.Get("data-folder"),
+        private readonly string _dataPath = LeanData.GenerateZipFilePath(Config.Get("data-directory"),
                                                                         new Symbol(SecurityIdentifier.GenerateEquity(PermTick, Market), PermTick),
                                                                         DateTime.MaxValue,
                                                                         Resolution.Daily,

@@ -46,7 +46,7 @@ namespace QuantConnect.ToolBox.BitfinexDownloader
                     new[] { (Resolution)Enum.Parse(typeof(Resolution), resolution) };
 
                 // Load settings from config.json
-                var dataDirectory = Config.Get("data-folder", "../../../Data");
+                var dataDirectory = Config.Get("data-directory", "../../../Data");
 
                 using (var downloader = new BitfinexDataDownloader())
                 {

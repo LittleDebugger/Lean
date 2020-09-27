@@ -31,7 +31,7 @@ namespace QuantConnect.Configuration
     public static class Config
     {
         //Location of the configuration file.
-        private static string ConfigurationFileName = "config.json";
+        private static string ConfigurationFileName = "/LeanAssets/config.json";
 
         /// <summary>
         /// Set configuration file on-fly
@@ -91,7 +91,7 @@ namespace QuantConnect.Configuration
                 {
                     {"algorithm-type-name", "BasicTemplateAlgorithm"},
                     {"live-mode", false},
-                    {"data-folder", "../../../Data/"},
+                    {"data-directory", "../../../Data/"},
                     {"messaging-handler", "QuantConnect.Messaging.Messaging"},
                     {"job-queue-handler", "QuantConnect.Queues.JobQueue"},
                     {"api-handler", "QuantConnect.Api.Api"},

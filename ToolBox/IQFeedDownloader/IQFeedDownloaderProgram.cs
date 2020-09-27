@@ -56,7 +56,7 @@ namespace QuantConnect.ToolBox.IQFeedDownloader
                 endDate = endDate.AddDays(1).AddMilliseconds(-1);
 
                 // Load settings from config.json
-                var dataDirectory = Config.Get("data-folder", "../../../Data");
+                var dataDirectory = Config.Get("data-directory", "../../../Data");
                 var userName = Config.Get("iqfeed-username", "username");
                 var password = Config.Get("iqfeed-password", "password");
                 var productName = Config.Get("iqfeed-productName", "productname");

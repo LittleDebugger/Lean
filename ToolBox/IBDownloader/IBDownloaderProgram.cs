@@ -66,7 +66,7 @@ namespace QuantConnect.ToolBox.IBDownloader
                 }
 
                 // Load settings from config.json
-                var dataDirectory = Config.Get("data-folder", "../../../Data");
+                var dataDirectory = Config.Get("data-directory", "../../../Data");
 
                 // Only FOREX for now
                 SecurityType securityType = SecurityType.Forex;
