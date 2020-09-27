@@ -60,7 +60,7 @@ namespace QuantConnect
             Tuple.Create(CME, 23),
             Tuple.Create(SGX, 24),
             Tuple.Create(HKFE, 25),
-            Tuple.Create(Lseetf, 10000)
+            Tuple.Create(Lseetf, 999)
         };
 
         static Market()
